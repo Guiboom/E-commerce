@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($senha)) {
         $login_erro = "Por favor, preencha o e-mail e a senha.";
     } else {
-        $sql = "SELECT id, nome, email, senha FROM administradores WHERE email = ?";
+        $sql = "SELECT id_usuario, nome_usuario, senha_usuario, email_usuario FROM usuario WHERE email_usuario = ?";
         
         if ($stmt = mysqli_prepare($link, $sql)) {
             mysqli_stmt_bind_param($stmt, "s", $param_email);
@@ -30,13 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 // Utilização correta da função para Prepared Statements
                 if (mysqli_stmt_num_rows($stmt) == 1) {
-                    mysqli_stmt_bind_result($stmt, $id, $nome, $email, $hashed_senha);
+                    mysqli_stmt_bind_result($stmt, $id, $nome, $hashed_senha, $email);
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($senha, $hashed_senha)) {
                             // Senha correta: Inicia nova sessão
                             session_regenerate_id();
                             $_SESSION["loggedin"] = true;
-                            $_SESSION["admin_id"] = $id;
+                            $_SESSION["id_usuario"] = $id;
                             $_SESSION["admin_nome"] = $nome;
                             $_SESSION["admin_email"] = $email;
                             
